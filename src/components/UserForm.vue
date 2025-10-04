@@ -55,7 +55,18 @@ const rules: FormRules = {
     { required: true, message: "Please input email", trigger: "blur" },
     { type: "email", message: "Invalid email", trigger: "blur" },
   ],
-  dob: { required: true, message: "Select date of birth", trigger: "blur" },
+  dob: {
+    required: true,
+    message: "Select date of birth",
+    trigger: "blur",
+    validator: (_, value) => {
+      if (!value) return false;
+      if (value instanceof Date) return !isNaN(value.getTime());
+      if (typeof value === "number") return value > 0;
+      if (typeof value === "string") return value.trim() !== "";
+      return true;
+    },
+  },
   gender: { required: true, message: "Select gender", trigger: "blur" },
 };
 </script>
