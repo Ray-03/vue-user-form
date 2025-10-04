@@ -26,7 +26,7 @@
       </n-form-item>
 
       <n-space justify="end">
-        <n-button type="primary">Add</n-button>
+        <n-button type="primary" @click="addUser">Add</n-button>
       </n-space>
     </n-form>
   </n-card>
@@ -34,7 +34,9 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import type { FormRules } from "naive-ui";
+import type { FormInst, FormRules } from "naive-ui";
+
+const formRef = ref<FormInst | null>(null);
 
 const form = ref({
   name: "",
@@ -68,5 +70,10 @@ const rules: FormRules = {
     },
   },
   gender: { required: true, message: "Select gender", trigger: "blur" },
+};
+
+const addUser = async () => {
+  await formRef.value?.validate();
+  console.log(form.value);
 };
 </script>
