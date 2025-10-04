@@ -14,7 +14,7 @@
       </n-form-item>
 
       <n-form-item label="Gender" path="gender">
-        <n-select placeholder="Select gender" />
+        <n-select placeholder="Select gender" :options="genderOptions" />
       </n-form-item>
 
       <n-space justify="end">
@@ -24,7 +24,7 @@
   </n-card>
 </template>
 
-<script>
+<script setup>
 import { ref } from "vue";
 
 const form = ref({
@@ -33,4 +33,10 @@ const form = ref({
   dob: "",
   gender: "",
 });
+
+const genderOptions = [
+  { label: "Male", value: "Male" },
+  { label: "Female", value: "Female" },
+  { label: "Other", value: "Other" },
+];
 </script>
