@@ -72,6 +72,64 @@ const rules: FormRules = {
   gender: { required: true, message: "Select gender", trigger: "blur" },
 };
 
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  dob: Date;
+  gender: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+const users = ref<User[]>([
+  {
+    id: "1",
+    name: "John Doe",
+    email: "john.doe@example.com",
+    dob: new Date("1990-05-15"),
+    gender: "Male",
+    createdAt: new Date("2024-01-15"),
+    updatedAt: new Date("2024-01-15"),
+  },
+  {
+    id: "2",
+    name: "Jane Smith",
+    email: "jane.smith@example.com",
+    dob: new Date("1988-12-03"),
+    gender: "Female",
+    createdAt: new Date("2024-01-16"),
+    updatedAt: new Date("2024-01-16"),
+  },
+  {
+    id: "3",
+    name: "Alex Johnson",
+    email: "alex.johnson@example.com",
+    dob: new Date("1995-08-22"),
+    gender: "Other",
+    createdAt: new Date("2024-01-17"),
+    updatedAt: new Date("2024-01-17"),
+  },
+  {
+    id: "4",
+    name: "Sarah Wilson",
+    email: "sarah.wilson@example.com",
+    dob: new Date("1992-03-10"),
+    gender: "Female",
+    createdAt: new Date("2024-01-18"),
+    updatedAt: new Date("2024-01-18"),
+  },
+  {
+    id: "5",
+    name: "Mike Brown",
+    email: "mike.brown@example.com",
+    dob: new Date("1987-11-28"),
+    gender: "Male",
+    createdAt: new Date("2024-01-19"),
+    updatedAt: new Date("2024-01-19"),
+  },
+]);
+
 const addUser = async () => {
   await formRef.value?.validate();
   console.log(form.value);
