@@ -3,7 +3,7 @@
     :is="viewMode === VIEW_MODE.LIST ? 'n-list-item' : 'div'"
     :class="{ 'user-item': true, 'grid-mode': viewMode === VIEW_MODE.GRID }"
   >
-    <n-card :hoverable="viewMode === VIEW_MODE.GRID">
+    <n-card :hoverable="true" class="clickable-card" @click="handleCardClick">
       <div class="user-header">
         <h3 class="user-name">{{ user.name }}</h3>
         <n-tag :type="getGenderTagType(user.gender)" size="small">
@@ -45,7 +45,7 @@
           size="small"
           type="error"
           tertiary
-          @click="$emit('delete', user.id)"
+          @click.stop="emit('delete', user.id)"
         >
           Delete
         </n-button>
@@ -60,9 +60,14 @@ import type { Timestamp } from "firebase/firestore";
 import { EmailOutlined, CalendarMonthOutlined } from "@vicons/material";
 import { VIEW_MODE } from "../types/ViewMode";
 
-defineProps<{
+const props = defineProps<{
   user: User;
   viewMode?: VIEW_MODE;
+}>();
+
+const emit = defineEmits<{
+  delete: [id: string];
+  edit: [user: User];
 }>();
 
 const formatDate = (date: Timestamp | null) => {
@@ -77,15 +82,28 @@ const formatDate = (date: Timestamp | null) => {
 const getGenderTagType = (gender: string | null) => {
   if (!gender) return "default";
   const lowerGender = gender.toLowerCase();
-  if (lowerGender === "male") return "error"; // red
-  if (lowerGender === "female") return "info"; // blue
-  return "success"; // green for other
+  if (lowerGender === "male") return "error";
+  if (lowerGender === "female") return "info";
+  return "success";
+};
+
+const handleCardClick = () => {
+  emit("edit", props.user);
 };
 </script>
 
 <style scoped>
 .user-item {
   width: 100%;
+}
+
+.clickable-card {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.clickable-card:hover {
+  transform: translateY(-2px);
 }
 
 .user-header {
