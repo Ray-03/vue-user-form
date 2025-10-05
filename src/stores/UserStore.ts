@@ -12,9 +12,7 @@ import {
   query,
   orderBy,
   where,
-  Timestamp,
-  type Query,
-  type DocumentData
+  Timestamp
 } from "firebase/firestore"
 
 export interface User {
@@ -31,6 +29,14 @@ export interface QueryOptions {
   sortField?: string
   sortOrder?: "asc" | "desc"
   genderFilter?: string | null
+  dobStart?: number | null
+  dobEnd?: number | null
+  createdAtStart?: number | null
+  createdAtEnd?: number | null
+  updatedAtStart?: number | null
+  updatedAtEnd?: number | null
+  namePrefix?: string | null
+  emailPrefix?: string | null
 }
 
 export const useUserStore = defineStore("userStore", () => {
@@ -46,21 +52,69 @@ export const useUserStore = defineStore("userStore", () => {
 
     loading.value = true
     
-    let q: Query<DocumentData> = collection(db, "users")
+    const constraints: any[] = []
     
     if (options.genderFilter) {
-      q = query(q, where("gender", "==", options.genderFilter))
+      constraints.push(where("gender", "==", options.genderFilter))
     }
     
     const sortField = options.sortField || "createdAt"
     const sortOrder = options.sortOrder || "desc"
-    q = query(q, orderBy(sortField, sortOrder))
+    
+    if (options.dobStart || options.dobEnd) {
+      if (options.dobStart) {
+        constraints.push(where("dob", ">=", Timestamp.fromMillis(options.dobStart)))
+      }
+      if (options.dobEnd) {
+        constraints.push(where("dob", "<=", Timestamp.fromMillis(options.dobEnd)))
+      }
+      constraints.push(orderBy("dob", sortOrder))
+      if (sortField !== "dob") {
+        constraints.push(orderBy(sortField, sortOrder))
+      }
+    } else if (options.createdAtStart || options.createdAtEnd) {
+      if (options.createdAtStart) {
+        constraints.push(where("createdAt", ">=", Timestamp.fromMillis(options.createdAtStart)))
+      }
+      if (options.createdAtEnd) {
+        constraints.push(where("createdAt", "<=", Timestamp.fromMillis(options.createdAtEnd)))
+      }
+      constraints.push(orderBy("createdAt", sortOrder))
+      if (sortField !== "createdAt") {
+        constraints.push(orderBy(sortField, sortOrder))
+      }
+    } else if (options.updatedAtStart || options.updatedAtEnd) {
+      if (options.updatedAtStart) {
+        constraints.push(where("updatedAt", ">=", Timestamp.fromMillis(options.updatedAtStart)))
+      }
+      if (options.updatedAtEnd) {
+        constraints.push(where("updatedAt", "<=", Timestamp.fromMillis(options.updatedAtEnd)))
+      }
+      constraints.push(orderBy("updatedAt", sortOrder))
+      if (sortField !== "updatedAt") {
+        constraints.push(orderBy(sortField, sortOrder))
+      }
+    } else {
+      constraints.push(orderBy(sortField, sortOrder))
+    }
+    
+    const q = query(collection(db, "users"), ...constraints)
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      users.value = snapshot.docs.map((docSnap) => ({
+      let fetchedUsers = snapshot.docs.map((docSnap) => ({
         id: docSnap.id,
         ...(docSnap.data() as Omit<User, "id">),
       }))
+      
+      if (options.namePrefix) {
+        const searchLower = options.namePrefix.toLowerCase()
+        fetchedUsers = fetchedUsers.filter(user => 
+          user.name.toLowerCase().includes(searchLower) ||
+          user.email.toLowerCase().includes(searchLower)
+        )
+      }
+      
+      users.value = fetchedUsers
       loading.value = false
     })
     unsubscribers.push(unsubscribe)
