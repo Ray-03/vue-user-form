@@ -4,7 +4,7 @@ export interface User {
   id: string
   name: string
   email: string
-  dob: Date
+  dob: Date | undefined
   gender: string
   createdAt: Date
   updatedAt: Date

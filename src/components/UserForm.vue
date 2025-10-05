@@ -35,13 +35,16 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { FormInst, FormRules } from "naive-ui";
+import { type User, useUserStore } from "../stores/UserStore";
+
+const userStore = useUserStore();
 
 const formRef = ref<FormInst | null>(null);
-const form = ref({
+const form = ref<Omit<User, "id" | "createdAt" | "updatedAt">>({
   name: "",
   email: "",
-  dob: null,
-  gender: null,
+  dob: undefined,
+  gender: "",
 });
 
 const genderOptions = [
@@ -73,6 +76,9 @@ const rules: FormRules = {
 
 const addUser = async () => {
   await formRef.value?.validate();
-  form.value = { name: "", email: "", dob: null, gender: null };
+  userStore.addUser({
+    ...form.value,
+  });
+  form.value = { name: "", email: "", dob: undefined, gender: "" };
 };
 </script>
