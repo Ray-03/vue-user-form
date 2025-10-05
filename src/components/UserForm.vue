@@ -43,7 +43,7 @@ const formRef = ref<FormInst | null>(null);
 const form = ref<Omit<User, "id" | "createdAt" | "updatedAt">>({
   name: "",
   email: "",
-  dob: undefined,
+  dob: null,
   gender: "",
 });
 
@@ -79,6 +79,14 @@ const addUser = async () => {
   userStore.addUser({
     ...form.value,
   });
-  form.value = { name: "", email: "", dob: undefined, gender: "" };
+
+  form.value = {
+    name: "",
+    email: "",
+    dob: null,
+    gender: "",
+  };
+
+  formRef.value?.restoreValidation();
 };
 </script>
