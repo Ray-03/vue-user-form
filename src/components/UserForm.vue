@@ -94,12 +94,12 @@ const rules: FormRules = {
   ],
   dob: {
     required: true,
-    message: "Select date of birth",
     trigger: ["blur", "change"],
     validator: (_, value) => {
-      if (!value) return new Error("Please select date of birth");
-      if (typeof value === "number" && value > 0) return true;
-      return new Error("Please select a valid date");
+      if (!value || value === null) {
+        return new Error("Please select date of birth");
+      }
+      return true;
     },
   },
   gender: { required: true, message: "Select gender", trigger: "blur" },
@@ -172,7 +172,7 @@ const handleSubmit = async () => {
     showModal.value = false;
     emit("success");
   } catch (error) {
-    console.error("Validation failed:", error);
+    // Validation failed - form will show error messages
   }
 };
 </script>
