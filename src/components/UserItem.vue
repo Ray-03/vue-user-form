@@ -23,6 +23,9 @@
 </template>
 
 <script setup lang="ts">
-const user: any = {};
-const formatDate = (date: Date) => new Date(date).toLocaleDateString();
+import type { User } from "../stores/UserStore";
+defineProps<{ user: User }>();
+
+const formatDate = (date?: Date) =>
+  date ? new Date(date).toLocaleDateString() : "";
 </script>
