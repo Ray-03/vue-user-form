@@ -73,7 +73,7 @@
 import { computed, onMounted, ref } from "vue";
 import { useUserStore, type User } from "../stores/UserStore";
 import UserItem from "./UserItem.vue";
-import UserFormModal from "./UserFormModal.vue";
+import UserFormModal from "./UserForm.vue";
 import {
   ListAltOutlined,
   GridViewOutlined,
