@@ -24,8 +24,16 @@
 
 <script setup lang="ts">
 import type { User } from "../stores/UserStore";
+import type { Timestamp } from "firebase/firestore";
+
 defineProps<{ user: User }>();
 
-const formatDate = (date?: Date) =>
-  date ? new Date(date).toLocaleDateString() : "";
+const formatDate = (date: Timestamp | null) => {
+  if (!date) return "";
+  try {
+    return date.toDate().toLocaleDateString();
+  } catch {
+    return "";
+  }
+};
 </script>
