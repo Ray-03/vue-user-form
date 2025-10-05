@@ -12,6 +12,14 @@
             </template>
             Add User
           </n-button>
+          <n-button @click="exportToCSV">
+            <template #icon>
+              <n-icon>
+                <DownloadOutlined />
+              </n-icon>
+            </template>
+            Export to CSV
+          </n-button>
           <n-button-group>
             <n-button
               :type="viewMode === VIEW_MODE.LIST ? 'primary' : 'default'"
@@ -117,6 +125,7 @@
 
     <div class="content">
       <user-list
+        ref="userListRef"
         :view-mode="viewMode"
         :search-query="searchQuery"
         :gender-filter="genderFilter"
@@ -171,10 +180,12 @@ import {
   GridViewOutlined,
   AddOutlined,
   SearchOutlined,
+  DownloadOutlined,
 } from "@vicons/material";
 import { VIEW_MODE } from "./types/ViewMode";
 import type { User } from "./stores/UserStore";
 
+const userListRef = ref<InstanceType<typeof UserList>>();
 const viewMode = ref<VIEW_MODE>(VIEW_MODE.LIST);
 const showFormModal = ref(false);
 const selectedUser = ref<User | null>(null);
@@ -229,5 +240,71 @@ const clearAllFilters = () => {
   dobRange.value = null;
   createdAtRange.value = null;
   updatedAtRange.value = null;
+};
+
+const exportToCSV = () => {
+  if (!userListRef.value) {
+    alert("Unable to export data");
+    return;
+  }
+
+  const users = userListRef.value.getFilteredUsers();
+
+  if (users.length === 0) {
+    alert("No data to export");
+    return;
+  }
+
+  const headers = [
+    "Name",
+    "Email",
+    "Date of Birth",
+    "Gender",
+    "Created At",
+    "Updated At",
+  ];
+
+  const rows = users.map((user) => {
+    const dob = user.dob?.toDate
+      ? new Date(user.dob.toDate()).toLocaleDateString()
+      : "";
+    const createdAt = user.createdAt?.toDate
+      ? new Date(user.createdAt.toDate()).toLocaleString()
+      : "";
+    const updatedAt = user.updatedAt?.toDate
+      ? new Date(user.updatedAt.toDate()).toLocaleString()
+      : "";
+
+    return [
+      user.name,
+      user.email,
+      dob,
+      user.gender || "",
+      createdAt,
+      updatedAt,
+    ];
+  });
+
+  const csvContent = [
+    headers.join(","),
+    ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
+  ].join("\n");
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+
+  link.setAttribute("href", url);
+  link.setAttribute(
+    "download",
+    `users_export_${new Date().toISOString().split("T")[0]}.csv`
+  );
+  link.style.visibility = "hidden";
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  alert(`Exported ${users.length} users to CSV`);
 };
 </script>

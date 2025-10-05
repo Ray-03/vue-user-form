@@ -112,6 +112,14 @@ const handleDelete = (id: string) => userStore.deleteUser(id);
 const handleEdit = (user: User) => {
   emit("edit", user);
 };
+
+const getFilteredUsers = () => {
+  return filteredUsers.value;
+};
+
+defineExpose({
+  getFilteredUsers,
+});
 </script>
 
 <style scoped>
