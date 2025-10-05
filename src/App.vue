@@ -1,51 +1,47 @@
 <template>
-  <div style="padding: 24px">
-    <div
-      style="
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 16px;
-      "
-    >
-      <h1 style="margin: 0">User Management System</h1>
-      <n-space>
-        <n-button type="primary" @click="handleAdd">
-          <template #icon>
-            <n-icon>
-              <AddOutlined />
-            </n-icon>
-          </template>
-          Add User
-        </n-button>
-        <n-button-group>
-          <n-button
-            :type="viewMode === VIEW_MODE.LIST ? 'primary' : 'default'"
-            @click="viewMode = VIEW_MODE.LIST"
-          >
+  <div>
+    <div class="sticky-header">
+      <div class="header-content">
+        <h1 style="margin: 0">User Management System</h1>
+        <n-space>
+          <n-button type="primary" @click="handleAdd">
             <template #icon>
               <n-icon>
-                <ListAltOutlined />
+                <AddOutlined />
               </n-icon>
             </template>
+            Add User
           </n-button>
-          <n-button
-            :type="viewMode === VIEW_MODE.GRID ? 'primary' : 'default'"
-            @click="viewMode = VIEW_MODE.GRID"
-          >
-            <template #icon>
-              <n-icon>
-                <GridViewOutlined />
-              </n-icon>
-            </template>
-          </n-button>
-        </n-button-group>
-      </n-space>
+          <n-button-group>
+            <n-button
+              :type="viewMode === VIEW_MODE.LIST ? 'primary' : 'default'"
+              @click="viewMode = VIEW_MODE.LIST"
+            >
+              <template #icon>
+                <n-icon>
+                  <ListAltOutlined />
+                </n-icon>
+              </template>
+            </n-button>
+            <n-button
+              :type="viewMode === VIEW_MODE.GRID ? 'primary' : 'default'"
+              @click="viewMode = VIEW_MODE.GRID"
+            >
+              <template #icon>
+                <n-icon>
+                  <GridViewOutlined />
+                </n-icon>
+              </template>
+            </n-button>
+          </n-button-group>
+        </n-space>
+      </div>
+      <n-divider style="margin: 0" />
     </div>
 
-    <n-divider style="margin: 16px 0" />
-
-    <user-list :view-mode="viewMode" @add="handleAdd" @edit="handleEdit" />
+    <div class="content">
+      <user-list :view-mode="viewMode" @add="handleAdd" @edit="handleEdit" />
+    </div>
 
     <user-form-modal
       v-model:show="showFormModal"
@@ -54,6 +50,27 @@
     />
   </div>
 </template>
+
+<style scoped>
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 100;
+  padding: 24px 24px 0 24px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+}
+
+.content {
+  padding: 24px;
+}
+</style>
 
 <script setup lang="ts">
 import { ref } from "vue";
