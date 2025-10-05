@@ -11,7 +11,7 @@
         :key="user.id"
         :user="user"
         :view-mode="viewMode"
-        @delete="handleDelete"
+        @delete="handleDeleteClick"
         @edit="handleEdit"
       />
     </n-list>
@@ -22,15 +22,25 @@
         :key="user.id"
         :user="user"
         :view-mode="viewMode"
-        @delete="handleDelete"
+        @delete="handleDeleteClick"
         @edit="handleEdit"
       />
     </div>
   </n-spin>
+
+  <n-modal
+    v-model:show="showDeleteModal"
+    preset="dialog"
+    title="Confirm Delete"
+    content="Are you sure you want to delete this user? This action cannot be undone."
+    positive-text="Delete"
+    negative-text="Cancel"
+    @positive-click="confirmDelete"
+  />
 </template>
 
 <script setup lang="ts">
-import { computed, watch, onMounted } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useUserStore, type User } from "../stores/UserStore";
 import UserItem from "./UserItem.vue";
 import { VIEW_MODE } from "../types/ViewMode";
@@ -107,7 +117,21 @@ onMounted(() => {
   });
 });
 
-const handleDelete = (id: string) => userStore.deleteUser(id);
+const showDeleteModal = ref(false);
+const userToDelete = ref<string | null>(null);
+
+const handleDeleteClick = (id: string) => {
+  userToDelete.value = id;
+  showDeleteModal.value = true;
+};
+
+const confirmDelete = () => {
+  if (userToDelete.value) {
+    userStore.deleteUser(userToDelete.value);
+    userToDelete.value = null;
+  }
+  showDeleteModal.value = false;
+};
 
 const handleEdit = (user: User) => {
   emit("edit", user);

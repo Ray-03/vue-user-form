@@ -23,7 +23,6 @@
         :dob-range="dobRange"
         :created-at-range="createdAtRange"
         :updated-at-range="updatedAtRange"
-        @add="handleAdd"
         @edit="handleEdit"
       />
     </div>

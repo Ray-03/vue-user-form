@@ -21,6 +21,7 @@
             v-model:value="form.dob"
             type="date"
             placeholder="Select DOB"
+            :is-date-disabled="isDateDisabled"
             style="width: 100%"
           />
         </n-form-item-gi>
@@ -80,6 +81,10 @@ const genderOptions = [
   { label: "Female", value: "Female" },
   { label: "Other", value: "Other" },
 ];
+
+const isDateDisabled = (timestamp: number) => {
+  return timestamp > Date.now();
+};
 
 const rules: FormRules = {
   name: { required: true, message: "Please input name", trigger: "blur" },
