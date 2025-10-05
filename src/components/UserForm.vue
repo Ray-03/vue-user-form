@@ -35,16 +35,22 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { FormInst, FormRules } from "naive-ui";
-import { type User, useUserStore } from "../stores/UserStore";
+import { useUserStore } from "../stores/UserStore";
+import { Timestamp } from "firebase/firestore";
 
 const userStore = useUserStore();
 
 const formRef = ref<FormInst | null>(null);
-const form = ref<Omit<User, "id" | "createdAt" | "updatedAt">>({
+const form = ref<{
+  name: string;
+  email: string;
+  dob: number | null;
+  gender: string | null;
+}>({
   name: "",
   email: "",
   dob: null,
-  gender: "",
+  gender: null,
 });
 
 const genderOptions = [
@@ -76,15 +82,23 @@ const rules: FormRules = {
 
 const addUser = async () => {
   await formRef.value?.validate();
+
+  const dobTimestamp = form.value.dob
+    ? Timestamp.fromMillis(form.value.dob)
+    : null;
+
   userStore.addUser({
-    ...form.value,
+    name: form.value.name,
+    email: form.value.email,
+    dob: dobTimestamp,
+    gender: form.value.gender,
   });
 
   form.value = {
     name: "",
     email: "",
     dob: null,
-    gender: "",
+    gender: null,
   };
 
   formRef.value?.restoreValidation();
