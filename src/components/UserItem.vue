@@ -7,8 +7,8 @@
       <div class="card-layout">
         <div class="card-header">
           <h3 class="user-name">{{ user.name }}</h3>
-          <n-tag :type="getGenderTagType(user.gender)" size="small">
-            {{ user.gender }}
+          <n-tag :type="genderInfo.type" size="small">
+            {{ genderInfo.symbol }}
           </n-tag>
         </div>
 
@@ -53,6 +53,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import type { User } from "../stores/UserStore";
 import type { Timestamp } from "firebase/firestore";
 import {
@@ -81,13 +82,14 @@ const formatDate = (date: Timestamp | null) => {
   }
 };
 
-const getGenderTagType = (gender: string | null) => {
-  if (!gender) return "default";
+const genderInfo = computed(() => {
+  const gender = props.user.gender;
+  if (!gender) return { symbol: "?", type: "default" as const };
   const lowerGender = gender.toLowerCase();
-  if (lowerGender === "male") return "error";
-  if (lowerGender === "female") return "info";
-  return "success";
-};
+  if (lowerGender === "male") return { symbol: "♂", type: "info" as const };
+  if (lowerGender === "female") return { symbol: "♀", type: "error" as const };
+  return { symbol: "⚧", type: "success" as const };
+});
 
 const handleCardClick = () => {
   emit("edit", props.user);
