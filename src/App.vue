@@ -4,12 +4,11 @@
     <n-divider />
     <user-form />
     <n-divider />
-    <div>test 1</div>
-    <div>test 2</div>
-    <div>test 3</div>
+    <user-list />
   </div>
 </template>
 
 <script setup lang="ts">
 import UserForm from "./components/UserForm.vue";
+import UserList from "./components/UserList.vue";
 </script>
