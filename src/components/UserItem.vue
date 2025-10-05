@@ -40,7 +40,11 @@
             tertiary
             @click.stop="emit('delete', user.id)"
           >
-            Delete
+            <template #icon>
+              <n-icon>
+                <DeleteOutlined />
+              </n-icon>
+            </template>
           </n-button>
         </div>
       </div>
@@ -51,7 +55,11 @@
 <script setup lang="ts">
 import type { User } from "../stores/UserStore";
 import type { Timestamp } from "firebase/firestore";
-import { EmailOutlined, CalendarMonthOutlined } from "@vicons/material";
+import {
+  EmailOutlined,
+  CalendarMonthOutlined,
+  DeleteOutlined,
+} from "@vicons/material";
 import { VIEW_MODE } from "../types/ViewMode";
 
 const props = defineProps<{
