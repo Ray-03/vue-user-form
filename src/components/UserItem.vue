@@ -30,12 +30,8 @@
         </div>
         <div class="info-row">
           <n-text depth="3" class="timestamp">
-            Created: {{ formatDate(user.createdAt) }}
-          </n-text>
-        </div>
-        <div class="info-row">
-          <n-text depth="3" class="timestamp">
-            Updated: {{ formatDate(user.updatedAt) }}
+            Created: {{ formatDate(user.createdAt) }} | Updated:
+            {{ formatDate(user.updatedAt) }}
           </n-text>
         </div>
       </div>
